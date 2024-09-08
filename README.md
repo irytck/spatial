@@ -1,2 +1,2 @@
 # Heading
-Here comes code for spatial analysis
+Here comes summary of the project
