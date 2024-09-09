@@ -1,2 +1,12 @@
-# Heading
+# Spatial Analysis of accesibility 
 Here comes summary of the project
+
+This study extends the concept of accessibility beyond spatial metrics by incorporating social dimensions to address individual inequalities and socioeconomic disparities in urban opportunities. Focusing on school accessibility in Valencia, it integrates both spatial and social factors to offer a comprehensive understanding of urban access inequalities.
+
+The research utilizes advanced spatial and socioeconomic analysis techniques, starting with extensive data preprocessing to clean, integrate, and enrich geospatial and socioeconomic datasets from sources like the Valencia City Council Geoportal and the National Statistics Institute (INE). The core methodology employed is the enhanced two-step floating catchment area method (E2SFCA), which measures access to educational services based on capacity and distance. This approach is tailored to different school types (public and charter) and educational levels (preschool to high school).
+
+Spatial analysis is further refined using spatial weight matrices, such as Queen Contiguity, K-Nearest Neighbors (KNN), and Kernel Density, to model geographic relationships. Moran's I statistic, both global and local (LISA), is applied to uncover significant spatial patterns and their intensity. The study also employs various feature selection techniques, including correlation-based filter methods, wrapper methods like Bidirectional Stepwise Selection and Recursive Feature Elimination, and embedded methods such as LASSO Regression, to identify the most influential variables affecting school accessibility.
+
+Classification and clustering analyses are conducted using Decision Trees, Random Forest with cross-validation, and K-means clustering to categorize spatial clusters and identify homogeneous areas in terms of accessibility and socioeconomic factors. Additionally, Geographically Weighted Regression (GWR) is used to explore the complex interplay between spatial accessibility and socioeconomic variables.
+
+Overall, this study provides a comprehensive assessment of socioeconomic and cultural inequalities in Valencia, offering valuable insights for public policy aimed at enhancing equity and educational quality in urban settings. It lays a foundation for more informed urban policy formulation to promote equity and quality of life in the city.
