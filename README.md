@@ -1,5 +1,4 @@
-# Spatial Analysis of accesibility 
-Here comes summary of the project
+# Spatial Analysis
 
 This study extends the concept of accessibility beyond spatial metrics by incorporating social dimensions to address individual inequalities and socioeconomic disparities in urban opportunities. Focusing on school accessibility in Valencia, it integrates both spatial and social factors to offer a comprehensive understanding of urban access inequalities.
 
