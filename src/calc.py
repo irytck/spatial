@@ -215,3 +215,6 @@ green_zones.plot(ax=ax, color='green', alpha=0.7, label='Green Zones')
 plt.legend(loc='upper right', fontsize=12)
 
 plt.show()
+census_tracts = census_tracts.drop(columns=['centroid'])
+output_path = "/Users/user/projects/spatial/data"
+census_tracts.to_file(f"{output_path}/Accesibility.geojson", driver="GeoJSON")
