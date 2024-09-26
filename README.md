@@ -1,6 +1,6 @@
 # Green Coverage and Accessibility Analysis in Valencia
 
-This project aims to analyze the availability and accessibility of green zones in the city of Valencia, Spain, using spatial analysis techniques. The analysis focuses on evaluating the per capita availability of green spaces, understanding disparities in green coverage, and correlating green coverage with land surface temperature.
+This project analyzes the availability and accessibility of green zones in Valencia using spatial data on census tracts and green areas. The focus is on evaluating green space distribution, accessibility, and its relationship with socioeconomic status.
 
 ## Project Overview
 
@@ -9,7 +9,7 @@ This study utilizes spatial data on census tracts and green zones to conduct a c
 - **Green Coverage Per Capita**: Analyzing the distribution of green spaces per person in each census tract, in accordance with the standards set by the World Health Organization (WHO).
 - **Accessibility Index**: Calculating the accessibility to green areas using the 2-Step Floating Catchment Area (2SFCA) method, which accounts for population density, green area sizes, and distances between census tracts and green zones.
 - **Hot Spot Analysis**: Identifying hot spots and cold spots of green coverage using spatial autocorrelation techniques.
-- **Land Surface Temperature Correlation**: Performing geographically weighted regression (GWR) to analyze the relationship between green coverage and land surface temperature in different areas of the city.
+- **Socioeconomic Correlation**: Explore the relationship between green coverage and socioeconomic indicators such as income and education.
 
 ## Data Sources
 
@@ -28,13 +28,14 @@ The project is divided into several stages:
    - **2SFCA Method**: Accessibility is measured using the 2-Step Floating Catchment Area (2SFCA) method, which factors in:
      - **Distances**: Manhattan distances between census tracts and green zones.
      - **Green Zone Areas**: Larger green spaces have higher scores.
-     - **Catchment Area**: A 1000-meter isochrone is used to define the accessible area around each green space.
+     - **Catchment Area**: A 1000-meter isochrone is used to define the accessible area.
+	 - **Population**: The population of census tracts is considered to determine how many people benefit from green spaces within the catchment area.
 
 3. **Spatial Autocorrelation**:
    - **Hot Spot and Cold Spot Analysis**: Spatial autocorrelation analysis is applied to identify clusters of census tracts with high or low green coverage.
 
 4. **Geographically Weighted Regression (GWR)**:
-   - **Correlation with Land Surface Temperature**: GWR is used to examine the relationship between green coverage and land surface temperature, helping to understand how vegetation affects urban heat.
+   - **Relationship with Socioeconomic Status**: GWR is used to examine the potential correlation between green coverage and socioeconomic indicators such as income and education levels to assess disparities in access to green spaces across different neighborhoods.
 
 ## Tools and Technologies
 
@@ -45,14 +46,6 @@ The project is divided into several stages:
 - **APIs**: To retrieve data from public sources.
 - **Spyder IDE**: Used for organizing code in different notebooks for data loading, exploration, and spatial analysis.
 
-## Results
-
-The analysis provides insights into:
-- Areas with insufficient green spaces per capita.
-- Zones with low accessibility to green zones.
-- Hot spots and cold spots of green coverage.
-- The relationship between green spaces and land surface temperature.
-
 ## Conclusion
 
-The findings can be used by urban planners and policymakers to address inequalities in access to green spaces and to implement strategies to improve environmental conditions in densely populated areas. The study also highlights the importance of green coverage in mitigating urban heat, particularly in regions with high land surface temperatures.
+The findings can be used by urban planners and policymakers to address inequalities in access to green spaces and to implement strategies to improve environmental conditions in densely populated areas. This project also highlights disparities between socioeconomic groups and their access to green spaces, encouraging equitable urban planning practices.
