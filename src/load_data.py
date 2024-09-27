@@ -150,7 +150,7 @@ green_zones['tipologia'].unique()
 green_zones = green_zones[green_zones['tipologia'] != 'Acompañamiento Viario']
 green_zones = green_zones[green_zones['tipologia'] != 'Bulevar']
 
-'''# Plot census tracts and green zones together
+# Plot census tracts and green zones together
 
 if 'geometry' in census_tracts.columns and 'geometry' in green_zones.columns:
     fig, ax = plt.subplots(figsize = (20,20))
@@ -161,8 +161,8 @@ if 'geometry' in census_tracts.columns and 'geometry' in green_zones.columns:
     # Add basemap
     ctx.add_basemap(ax, crs=census_tracts.crs.to_string(), source = ctx.providers.OpenStreetMap.Mapnik)
     
-    plt.show()'''
-    
+    plt.show()
+
 # Add population to census tracts
 
 population = pd.read_excel('/Users/user/projects/spatial/data/Censo_2021.xlsx')
