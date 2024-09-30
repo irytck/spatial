@@ -29,7 +29,7 @@ census_tracts['centroid'] = census_tracts.geometry.centroid
 # Distances calculations
 # %% [fold]
 # File to save precomputed distances
-distances_file = 'recomputed_distances.pkl'
+distances_file = 'precomputed_distances.pkl'
 
 # Function to calculate Manhattan distances
 def manhattan_distance(p1, p2):
@@ -239,6 +239,6 @@ plt.show()
 # Save as GeoJSON
 census_tracts = census_tracts.drop(columns=['centroid'])
 output_path = "/Users/user/projects/spatial/data"
-census_tracts.to_file(f"{output_path}/Accesibility.geojson", driver="GeoJSON")
+census_tracts.to_file(f"{output_path}/census_tracts_2sfca.geojson", driver="GeoJSON")
 
 

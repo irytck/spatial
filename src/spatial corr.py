@@ -8,18 +8,15 @@ Created on Wed Sep 25 13:45:50 2024
 # Import libraries
 import pandas as pd
 import geopandas as gpd
-import numpy as np
 import matplotlib.pyplot as plt
 import contextily as ctx
-import osmnx as ox
-import pysal
 from pysal.lib import weights
 import seaborn as sns
 import esda
 from splot import esda as esdaplot
 
 
-census = gpd.read_file('/Users/user/projects/spatial/data/Accesibility.geojson')
+census = gpd.read_file('/Users/user/projects/spatial/data/census_tracts_2sfca.geojson')
 parks = gpd.read_file('/Users/user/projects/spatial/data/green_zones.geojson')
 dist = gpd.read_file('/Users/user/projects/spatial/data/districts.geojson')
 
@@ -158,7 +155,6 @@ lisa = esda.moran.Moran_Local(census['acces_norm'], w)
 
 fig, ax = plt.subplots(figsize = (20,20))
 esdaplot.lisa_cluster(lisa, census, p = 0.05, ax=ax)
-plt.text()
 ctx.add_basemap(ax, crs=census.crs, source=ctx.providers.CartoDB.Positron)
 ax.set_axis_off()
 ax.set_title("LISA Cluster Map", size =25)
