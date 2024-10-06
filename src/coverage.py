@@ -17,13 +17,6 @@ districts = gpd.read_file('/Users/user/projects/spatial/data/districts.geojson')
 
 
 # Calclulate % of Green Cover in the city
-'''$\frac{Green cover in sq.km}{Municipal area in sq.km}*100$'''
-
-'''Per capita availability of green cover is an important indicator to determine whether green cover is sufficient for each
-person in the city. Zones in which population density is extremely high, appropriate measures need to be taken to make sure 
-that adequate green cover is available per person. Please refer Standards of World Health Organisation, 
-which prescribes minimum 9 sqm green cover per person and an ideal of 50 sqm per person.'''
-
 parks = parks.to_crs(epsg=25830)
 census = census.to_crs(epsg=25830)
 
@@ -43,7 +36,7 @@ area_by_category['area_ha'] = area_by_category['area_ha'].apply(lambda x: f'{x:,
 
 print("\n")
 print('Area by category') 
-print(area_by_category[['tipologia', 'area_ha']])
+display(area_by_category[['tipologia', 'area_ha']])
 print("\n")
 
 # Calculate total green coverage in sq.km
@@ -63,7 +56,7 @@ green_cover_pct = (total_green_area_sqkm/mun_area_sqkm)*100
 print(f'Percentage of green cover in the city: {green_cover_pct:,.2f} %')
 
 # Spatial join btw parks and census
-parks_with_census = gpd.sjoin(parks, census, how="left", op="intersects")
+parks_with_census = gpd.sjoin(parks, census, how="left", predicate="intersects")
 
 # Verify parks per section
 parks_per_section = parks_with_census.groupby('coddistsecc').size()
@@ -80,10 +73,10 @@ data_by_zone = pd.merge(green_area_per_zone, population_per_zone, on='zona')
 
 data_by_zone['sqm_per_person'] = data_by_zone['st_area_shape']/data_by_zone['population']
 
-print("\n")
+'''print("\n")
 print("Green Cover sqm per person:")
 print(data_by_zone[['zona','green_area_ha', 'sqm_per_person']])
-print("\n")
+print("\n")'''
 
 # Plot
 plt.figure(figsize=(10,6))
@@ -126,7 +119,6 @@ data_by_district['sqm_per_person'] = data_by_district['st_area_shape']/data_by_d
 
 data_by_district = data_by_district.rename(columns = {'dm_right' : 'dm'})
 
-
 # Barplot Green covergae by District
 
 plt.figure(figsize=(10,6))
@@ -149,12 +141,11 @@ plt.legend()
 plt.tight_layout()
 plt.show()
 
-# Plot Covergae by District on the Map 
+'''# Plot Covergae by District on the Map 
 # Create GeoDataFrame
 districts_coverage = pd.merge(data_by_district, districts[['dm', 'geometry']], on='dm', how='left')
 districts_coverage = gpd.GeoDataFrame(districts_coverage, geometry='geometry')
 districts_coverage.set_crs(epsg=4326, inplace=True)
-
 
 fig, ax = plt.subplots(figsize=(20,20))
 
@@ -166,4 +157,4 @@ ctx.add_basemap(ax, crs=districts_coverage.crs, source=ctx.providers.CartoDB.Pos
 plt.title("Green Coverage per person by District (sqm)", size = 25)
 
 plt.tight_layout()
-plt.show()
+plt.show()'''
