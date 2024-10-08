@@ -19,22 +19,11 @@ from splot import esda as esdaplot
 census = gpd.read_file('/Users/user/projects/spatial/data/census_tracts_2sfca.geojson')
 
 # Construct Weight matrix based on Kernel function
-'''Kernel weights measure the relationship between observations based on spatial proximity, 
-where closer locations have a stronger connection than distant ones, and this relationship 
-is modulated by a specific kernel function. These weights, used in spatial analysis, 
-follow Tobler's First Law and allow for different sensitivities in how influence decreases with distance, 
-adapting to various spatial contexts.'''
-
 w = weights.distance.Kernel.from_dataframe(census, fixed=False, k=16) # I chose a maximum of k=16 neighbors to capture the full range of variability, as sections have between 1 and 16 neighbors, with a mode of 7. 
 w.bandwidth[:5]
 
-'''Adaptive bandwidth ensures that each census section has exactly 16 neighbors, 
-adjusting the distance based on local neighbor density. 
-This approach captures spatial variability more accurately, as densely populated areas use smaller bandwidths, 
-while sparsely populated areas use larger ones.'''
-
 # Plot weights
-f, ax = plt.subplots(
+'''f, ax = plt.subplots(
     1,2, figsize = (10,5), subplot_kw=dict(aspect="equal")
     )
 census.assign(w_0=w[0]).plot(
@@ -56,27 +45,21 @@ ax[1].set_title(f"Kernel centered on census: {census.iloc[35]['coddistsecc']}")
 [ax_.legend(loc='upper left') for ax_ in ax]
 
 plt.suptitle("Comparative Visualization of Kernel Weights Across Two Census Tracts", fontsize = 25)
-plt.show()
+plt.show()'''
 
 # Global Spatial Correlation
 
 ## Spatial Lag model
 '''Spatial Lag helps to understand how the values of a variable, such as 2SFCA (Two-Step Floating Catchment Area),
 in one section are influenced by the values in neighboring sections. It effectively captures the spatial dependence,
-revealing how accessibility to green areas in one location is shaped by the surrounding areas, acting as a local 
-"smoother" of the variable across the spatial context. $Y_{sl}=W*Y$'''
+revealing how accessibility to green areas in one location is shaped by the surrounding areas, acting as a local "smoother" of the variable across the spatial context. $Y_{sl}=W*Y$'''
 
 census['acces_lag'] = weights.spatial_lag.lag_spatial(w, census['acces_norm'])
 
 # Choroplet map: Accesibility vs Accesibilty_Spatial Lag
-'''Four classification methods were tested: Equal Intervals, Quantiles, Fisher-Jenks, and Jenks-Caspall. 
-Ultimately, 𝑘=7 was selected for the Fisher-Jenks method as it struck the best balance between map complexity and 
-the representation of significant data variations. The method's lowest ADCM score further indicated that it provided 
-the most compact and accurate data classification.'''
+'''Four classification methods were tested: Equal Intervals, Quantiles, Fisher-Jenks, and Jenks-Caspall. Ultimately, 𝑘=7 was selected for the Fisher-Jenks method as it struck the best balance between map complexity and the representation of significant data variations. The method's lowest ADCM score further indicated that it provided the most compact and accurate data classification.'''
 
-import matplotlib.pyplot as plt
-import contextily as ctx
-
+'''
 # Create subplots
 f, ax = plt.subplots(1, 2, figsize=(20, 10))
 
@@ -127,7 +110,7 @@ plt.subplots_adjust(top=0.85)  # Adjust top value
 
 plt.tight_layout(rect=[0, 0, 1, 0.85])  # Adjust rect to give room for the title and subtitle
 plt.show()
-
+'''
 
 # Moran´s I
 '''Moran's I indicates whether nearby locations exhibit similar values for a given variable such as green zone accesibility index.
@@ -147,7 +130,7 @@ resume_moran = pd.DataFrame({
 display(resume_moran)'''
 
 # Moran Plot
-fig, ax = plt.subplots(figsize = (10,10))
+'''fig, ax = plt.subplots(figsize = (10,10))
 sns.regplot(
     x = 'acces_std',
     y = 'acces_lag_std',
@@ -165,24 +148,24 @@ plt.text(0.01, 2.5,
 plt.title("Moran Plot", size = 25)
 
 plt.tight_layout()
-plt.show()
+plt.show()'''
 
 # Local Spatial Correlation
 lisa = esda.moran.Moran_Local(census['acces_norm'], w)
 
-fig, ax = plt.subplots(figsize = (10,10))
+'''fig, ax = plt.subplots(figsize = (10,10))
 esdaplot.lisa_cluster(lisa, census, p = 0.05, ax=ax)
 ctx.add_basemap(ax, crs=census.crs, source=ctx.providers.CartoDB.Positron)
 ax.set_axis_off()
 ax.set_title("LISA Cluster Analysis: Mapping HH and LL Accessibility Index Values", size =25)
 
 plt.tight_layout()
-plt.show()
+plt.show()'''
 
 counts = pd.Series(lisa.q).value_counts()
 
-print("Number of observations in each cluster: \n")
-display(counts)
+'''print("Number of observations in each cluster: \n")
+display(counts)'''
 
 # Export significance levels
 census['p_sim_acces'] = lisa.p_sim

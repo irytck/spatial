@@ -22,14 +22,13 @@ from esda.moran import Moran
 # Open data
 data = gpd.read_file('/Users/user/projects/spatial/data/lisa.geojson')
 
-features = ['population_density','education_avg','Vm2',
-'income_avg']
+features = ['population_density','education_avg','income_avg']
 
 X = data[features]
 y = data['acces_norm']
 
 # create histogram
-plt.figure(figsize=(10,6))
+'''plt.figure(figsize=(10,6))
 plt.hist(y, bins=60, density=True, alpha=0.5, color='g', edgecolor='black')
 
 # Adjust a curve for normal distribution
@@ -45,25 +44,9 @@ plt.xlabel('acces_raw')
 plt.ylabel('Density')
 
 plt.grid(True)
-plt.show()
+plt.show()'''
 
-'''
-The skewness is a clue about potential spatial inequality in access to green zones. Investigate spatial clusters using Moran's I and local indicators 
-of spatial association (LISA) to detect if high-accessibility areas are clustered in particular parts of the city, indicating inequitable distribution of green spaces.
-
-
-Positively skewed distribution, indicates that most observations have lower accessibility to green zones, while a few areas have much higher accessibility.
-Outliers or High-Access Areas: The long right tail of the distribution suggests that some areas have much better access to green spaces, potentially due to the proximity to large or multiple parks. 
-These areas could be clustered in certain neighborhoods, leading to spatial inequality.
-
-The positive skew suggests that the dependent variable (green zone accessibility) is not normally distributed. 
-This could violate assumptions in some statistical models, though GWR is relatively robust to non-normality. 
-However, extreme skewness may still affect the reliability of local coefficient estimates.
-To reduce the skewness and improve model performance, considering log transformation.
-First check residuals without log transformation if needed apply boxcox
-
-Areas with higher accessibility might disproportionately influence the GWR results, especially in the spatial clusters of high-accessibility zones. 
-This could lead to strong local relationships in some parts of the city (high-accessibility areas) and weaker or even insignificant relationships in low-accessibility areas.'''
+'''To address the skewness and potentially improve model performance, consider applying a log transformation. However, it is advisable to first examine the residuals without transformation, and if needed, apply a Box-Cox transformation to correct for the skew and stabilize variance.'''
 
 data['centroid'] = data.geometry.centroid
 
@@ -83,32 +66,31 @@ model = GWR(coords, y, X, bw)
 results = model.fit()
 
 # Model results
-results.summary()
+'''summary_gwr = results.summary()'''
 
 # Export coefficient
 coefficients = results.params
 
 # As reference, here is the (average) R2, AIC, and AICc
-print('Mean R2 =', results.R2)
+'''print('Mean R2 =', results.R2)
 print('AIC =', results.aic)
-print('AICc =', results.aicc)
+print('AICc =', results.aicc)'''
 
 # Add R2 to GeoDataframe
 data['gwr_R2'] = results.localR2
 
 # Map R2 Values
-fig, ax = plt.subplots(figsize=(6, 6))
+'''fig, ax = plt.subplots(figsize=(6, 6))
 data.plot(column='gwr_R2', cmap = 'Greens', linewidth=0.01, scheme = 'JenksCaspall', k=7, legend=True, legend_kwds={'bbox_to_anchor':(1.10, 0.96)},  ax=ax)
 ax.set_title('Local R2', fontsize=12)
 ax.axis("off")
-plt.show()
+plt.show()'''
 
 # Extract coefficients
 data['gwr_intercept'] = results.params[:,0]
 data['gwr_pop'] = results.params[:,1]
-data['gwr_age'] = results.params[:,2]
-data['gwr_vm2'] = results.params[:,3]
-data['gwr_income'] = results.params[:,4]
+data['gwr_education'] = results.params[:,2]
+data['gwr_income'] = results.params[:,3]
 
 
 # Filter t-values: standard alpha = 0.05
@@ -117,17 +99,18 @@ filtered_t = results.filter_tvals(alpha = 0.05)
 filtered_tc = results.filter_tvals()
 pd.DataFrame(filtered_tc)
 
-fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(20,20))
+# PLot Coeficients
+'''fig, axes = plt.subplots(nrows=2, ncols=2, figsize=(20,20))
 
-data.plot(column='gwr_pop', cmap = 'coolwarm', linewidth=0.05, scheme = 'FisherJenks', k=7,
+data.plot(column='gwr_intercept', cmap = 'coolwarm', linewidth=0.05, scheme = 'FisherJenks', k=7,
           legend=False, legend_kwds={'bbox_to_anchor':(1.10, 0.96)},  ax=axes[0,0])
 data[filtered_tc[:,1] == 0].plot(color='white', linewidth=0.05, edgecolor='black', ax=axes[0,0])
 
-data.plot(column='gwr_age', cmap = 'coolwarm', linewidth=0.05, scheme = 'FisherJenks', k=7,
+data.plot(column='gwr_pop', cmap = 'coolwarm', linewidth=0.05, scheme = 'FisherJenks', k=7,
           legend=False, legend_kwds={'bbox_to_anchor':(1.10, 0.96)},  ax=axes[0,1])
 data[filtered_tc[:,1] == 0].plot(color='white', linewidth=0.05, edgecolor='black', ax=axes[0,1])
 
-data.plot(column='gwr_vm2', cmap = 'coolwarm', linewidth=0.05, scheme = 'FisherJenks', k=7,
+data.plot(column='gwr_education', cmap = 'coolwarm', linewidth=0.05, scheme = 'FisherJenks', k=7,
           legend=False, legend_kwds={'bbox_to_anchor':(1.10, 0.96)},  ax=axes[1,0])
 data[filtered_tc[:,1] == 0].plot(color='white', linewidth=0.05, edgecolor='black', ax=axes[1,0])
 
@@ -143,12 +126,12 @@ axes[1,0].axis("off")
 axes[1,1].axis("off")
 
 
-axes[0,0].set_title('Population Density (BW: ' + str(bw) +'), significant coeffs', fontsize=12)
-axes[0,1].set_title('Age Average  (BW: ' + str(bw) +'), significant coeffs', fontsize=12)
-axes[1,0].set_title('Value m2  (BW: ' + str(bw) +'), significant coeffs', fontsize=12)
+axes[0,0].set_title('Intercept (BW: ' + str(bw) +'), significant coeffs', fontsize=12)
+axes[0,1].set_title('Population Density  (BW: ' + str(bw) +'), significant coeffs', fontsize=12)
+axes[1,0].set_title('Education Average  (BW: ' + str(bw) +'), significant coeffs', fontsize=12)
 axes[1,1].set_title('Income Average  (BW: ' + str(bw) +'), significant coeffs', fontsize=12)
 
-plt.show()
+plt.show()'''
 
 # Get the residuals
 residuals = results.resid_response
@@ -159,7 +142,7 @@ w = weights.distance.Kernel.from_dataframe(data)
 
 # Moran´s I
 moran = Moran(data['gwr_residuals'], w)
-print('Moran´s I:', moran.I)
+'''print('Moran´s I:', moran.I)
 print('p-value:', moran.p_sim)
 
 # Plot
@@ -167,20 +150,21 @@ fig, ax = plt.subplots(figsize=(10, 6))
 data.plot(column='gwr_residuals', cmap='coolwarm', linewidth=0.8, edgecolor='k', legend=True, ax=ax)
 ax.set_title('Residuals of the Model GWR', fontsize=15)
 ax.axis('off')
-'''plt.text(-0.02, 0.4,
-         f'Moran´s I: {moran.I:,.4f} \n'
-        f'P-value: {moran.p_sim:,.2f}\n',
-         fontsize=10, color='black', bbox=dict(facecolor='white', alpha=0.5))'''
-plt.show()
+
+#plt.text(-0.02, 0.4,
+         #f'Moran´s I: {moran.I:,.4f} \n'
+        #f'P-value: {moran.p_sim:,.2f}\n',
+         #fontsize=10, color='black', bbox=dict(facecolor='white', alpha=0.5))
+plt.show()'''
 
 
 # Normality Test Shapiro-Wilk
 stat, p = shapiro(residuals)
-print('Shapiro-Wilk:', stat)
-print('p-value:', p)
+'''print('Shapiro-Wilk:', stat)
+print('p-value:', p)'''
 
 # Histograma de los residuos
-plt.figure(figsize=(10, 6))
+'''plt.figure(figsize=(10, 6))
 sns.histplot(residuals, kde=True)
 plt.title('Histogram Residuals for Model GWR')
 
@@ -190,19 +174,19 @@ plt.text(-0.2, 70,
          fontsize=10, color='black', bbox=dict(facecolor='white', alpha=0.5))
 plt.xlabel('Residuals')
 plt.ylabel('Frequency')
-plt.show()
+plt.show()'''
 
 # Get predicted values
 predicted = results.predy
 
 # Plot residuos vs predicted
-plt.figure(figsize=(10, 6))
+'''plt.figure(figsize=(10, 6))
 plt.scatter(predicted, residuals)
 plt.axhline(y=0, color='r', linestyle='--')
 plt.title('Residuals vs Predicted Values')
 plt.xlabel('Predicted')
 plt.ylabel('Residuals')
-plt.show()
+plt.show()'''
 
 
 

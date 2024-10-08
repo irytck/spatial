@@ -34,26 +34,26 @@ area_by_category['area_ha'] = area_by_category['st_area_shape'] / 10000
 # 2 decimals
 area_by_category['area_ha'] = area_by_category['area_ha'].apply(lambda x: f'{x:,.2f} ha')
 
-print("\n")
+'''print("\n")
 print('Area by category') 
 display(area_by_category[['tipologia', 'area_ha']])
-print("\n")
+print("\n")'''
 
 # Calculate total green coverage in sq.km
 total_green_area_sqm = parks['st_area_shape'].sum()
 total_green_area_sqkm = total_green_area_sqm/ 1_000_000
-print(f'Total Green Coverage: {total_green_area_sqkm:,.2f} sqkm')
-print("\n")
+'''print(f'Total Green Coverage: {total_green_area_sqkm:,.2f} sqkm')
+print("\n")'''
 
 # Calculate Municipal area in sq.km
 mun_area_sqm = census['st_shape_area'].sum()
 mun_area_sqkm = mun_area_sqm/1_000_000
-print(f'Total Municipal Area: {mun_area_sqkm:,.2f} sqkm')
-print("\n")
+'''print(f'Total Municipal Area: {mun_area_sqkm:,.2f} sqkm')
+print("\n")'''
 
 # Calculate % of the green cover in the city
 green_cover_pct = (total_green_area_sqkm/mun_area_sqkm)*100
-print(f'Percentage of green cover in the city: {green_cover_pct:,.2f} %')
+'''print(f'Percentage of green cover in the city: {green_cover_pct:,.2f} %')'''
 
 # Spatial join btw parks and census
 parks_with_census = gpd.sjoin(parks, census, how="left", predicate="intersects")
@@ -79,7 +79,7 @@ print(data_by_zone[['zona','green_area_ha', 'sqm_per_person']])
 print("\n")'''
 
 # Plot
-plt.figure(figsize=(10,6))
+'''plt.figure(figsize=(10,6))
 bars = plt.bar(data_by_zone['zona'], data_by_zone['sqm_per_person'], color='skyblue')
 
 plt.axhline(y=50, color='green', linestyle='--', label='ideal 50 sqm by World Health Organisation')
@@ -105,7 +105,7 @@ plt.xticks(rotation=90)
 plt.legend()
 
 plt.tight_layout()
-plt.show()
+plt.show()'''
 
 # Aggregate the green zones per District
 green_area_per_district = parks_with_census.groupby('dm_right')['st_area_shape'].sum().reset_index()
@@ -120,8 +120,7 @@ data_by_district['sqm_per_person'] = data_by_district['st_area_shape']/data_by_d
 data_by_district = data_by_district.rename(columns = {'dm_right' : 'dm'})
 
 # Barplot Green covergae by District
-
-plt.figure(figsize=(10,6))
+'''plt.figure(figsize=(10,6))
 bars = plt.bar(data_by_district['dm'], data_by_district['sqm_per_person'], color='skyblue')
 
 plt.axhline(y=50, color='green', linestyle='--', label='ideal 50 sqm by World Health Organisation')
@@ -139,7 +138,7 @@ plt.xticks(rotation=90)
 plt.legend()
 
 plt.tight_layout()
-plt.show()
+plt.show()'''
 
 '''# Plot Covergae by District on the Map 
 # Create GeoDataFrame
