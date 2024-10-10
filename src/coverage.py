@@ -1,9 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Wed Sep 25 13:45:50 2024
+Script to analyze green cover in Valencia using geospatial data.
 
-@author: user
+This script performs calculations on green zones and census data, 
+computes green coverage metrics, and generates visualizations.
+
+Author: irytck
+Date Created: September 25, 2024
 """
 
 import pandas as pd
@@ -11,9 +13,9 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import contextily as ctx
 
-census = gpd.read_file('/Users/user/projects/spatial/data/census_tracts_2sfca.geojson')
-parks = gpd.read_file('/Users/user/projects/spatial/data/green_zones.geojson')
-districts = gpd.read_file('/Users/user/projects/spatial/data/districts.geojson')
+census = gpd.read_file('data/census_tracts_2sfca.geojson')
+parks = gpd.read_file('data/green_zones.geojson')
+districts = gpd.read_file('data/districts.geojson')
 
 
 # Calclulate % of Green Cover in the city
@@ -78,7 +80,7 @@ print("Green Cover sqm per person:")
 print(data_by_zone[['zona','green_area_ha', 'sqm_per_person']])
 print("\n")'''
 
-# Plot
+# Plot Coverage by Zone
 '''plt.figure(figsize=(10,6))
 bars = plt.bar(data_by_zone['zona'], data_by_zone['sqm_per_person'], color='skyblue')
 
@@ -140,8 +142,8 @@ plt.legend()
 plt.tight_layout()
 plt.show()'''
 
-'''# Plot Covergae by District on the Map 
-# Create GeoDataFrame
+# Plot Covergae by District on the Map 
+'''# Create GeoDataFrame
 districts_coverage = pd.merge(data_by_district, districts[['dm', 'geometry']], on='dm', how='left')
 districts_coverage = gpd.GeoDataFrame(districts_coverage, geometry='geometry')
 districts_coverage.set_crs(epsg=4326, inplace=True)
