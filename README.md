@@ -1,6 +1,6 @@
 # Green Coverage and Accessibility Analysis in Valencia
 
-This project analyzes the availability and accessibility of green zones in Valencia using spatial data on census tracts and green areas. The focus is on evaluating green space distribution, accessibility, and its relationship with socioeconomic status.
+This project analyzes the availability and accessibility of green zones in Valencia using spatial data on census tracts and green areas. The focus is on evaluating green space distribution and accessibility
 
 ## Project Overview
 
@@ -8,8 +8,7 @@ This study utilizes spatial data on census tracts and green zones to conduct a c
 
 - **Green Coverage Per Capita**: Analyzing the distribution of green spaces per person in each census tract, in accordance with the standards set by the World Health Organization (WHO).
 - **Accessibility Index**: Calculating the accessibility to green areas using the 2-Step Floating Catchment Area (2SFCA) method, which accounts for population density, green area sizes, and distances between census tracts and green zones.
-- **Hot Spot Analysis**: Identifying hot spots and cold spots of green coverage using spatial autocorrelation techniques.
-- **Socioeconomic Correlation**: Explore the relationship between green coverage and socioeconomic indicators such as income and education.
+- **Spatial Analysis**: Identify patterns in green zones accesibility index using spatial autocorrelation techniques.
 
 ## Data Sources
 
