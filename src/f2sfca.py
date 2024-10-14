@@ -1,5 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
+"""
+This script calculates an accessibility index for green zones using the Two-Step Floating Catchment Area (2SFCA) method, based on the distances between census tracts and green zones in a geographic area.
+
+Author: irytck
+Date Created: September 30, 2024
+"""
 
 # Import libraries
 import pandas as pd
@@ -12,8 +16,8 @@ import pickle
 import os
 
 # Open data
-census_tracts = gpd.read_file('/Users/user/projects/spatial/data/census_tracts.geojson')
-green_zones = gpd.read_file('/Users/user/projects/spatial/data/green_zones.geojson')
+census_tracts = gpd.read_file('../data/census_tracts.geojson')
+green_zones = gpd.read_file('../data/green_zones.geojson')
 
 # Reproject crs
 census_tracts = census_tracts.to_crs(epsg=25830)
@@ -184,7 +188,7 @@ plt.show()
 
 # Save as GeoJSON
 census_tracts = census_tracts.drop(columns=['centroid'])
-output_path = "/Users/user/projects/spatial/data"
+output_path = "../data"
 census_tracts.to_file(f"{output_path}/census_tracts_2sfca.geojson", driver="GeoJSON")
 
 

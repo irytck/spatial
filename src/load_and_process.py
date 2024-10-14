@@ -1,9 +1,11 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Mon Sep 30 12:37:45 2024
+This script retrieves spatial data from public APIs and combines it with local census data for analysis. 
+It processes green zones and district boundaries in Valencia, filters out irrelevant districts, and merges them with demographic, cadastral, and income data. 
+The resulting geospatial data is used to calculate population density and analyze green spaces within each district. 
+The script visualizes the census tracts and green zones on a map with a basemap, and it saves the processed geospatial data as GeoJSON files for further use.
 
-@author: user
+Author: irytck
+Date Created: September 20, 2024
 """
 
 # Import libraries
@@ -90,11 +92,11 @@ else:
     
     
 # Load GeoData for sections
-sections = gpd.read_file('/Users/user/projects/spatial/data/secciones_censales/secciones_censales.shp')
-population = pd.read_excel('/Users/user/projects/spatial/data/population_2021.xlsx')
-censo = pd.read_excel('/Users/user/projects/spatial/data/Censo_personas_2021.xls')
-catastr = pd.read_excel('/Users/user/projects/spatial/data/valor_catastral_seccion.xlsx')
-renta = pd.read_csv ('/Users/user/projects/spatial/data/renta_imputed_2015-2021.csv')
+sections = gpd.read_file('data/secciones_censales/secciones_censales.shp')
+population = pd.read_excel('data/population_2021.xlsx')
+censo = pd.read_excel('data/Censo_personas_2021.xls')
+catastr = pd.read_excel('data/valor_catastral_seccion.xlsx')
+renta = pd.read_csv ('data/renta_imputed_2015-2021.csv')
 
 censo = censo.dropna()
 sections = sections.dropna()

@@ -13,22 +13,21 @@ import geopandas as gpd
 import matplotlib.pyplot as plt
 import contextily as ctx
 
-census = gpd.read_file('data/census_tracts_2sfca.geojson')
-parks = gpd.read_file('data/green_zones.geojson')
-districts = gpd.read_file('data/districts.geojson')
+census_tracts = gpd.read_file('../data/census_tracts_2sfca.geojson')
+green_zones = gpd.read_file('../data/green_zones.geojson')
+districts = gpd.read_file('../data/districts.geojson')
 
 
 # Calclulate % of Green Cover in the city
-parks = parks.to_crs(epsg=25830)
-census = census.to_crs(epsg=25830)
-
-parks['tipologia'].unique()
+# Change crs to epsg=25830
+green_zones = green_zones.to_crs(epsg=25830)
+census_tracts = census_tracts.to_crs(epsg=25830)
 
 # Convert the area from sqm to ha
-parks['area_ha'] = parks['st_area_shape'] / 10000  # 1 ha = 10,000 sqm
+green_zones['area_ha'] = green_zones['st_area_shape'] / 10000  # 1 ha = 10,000 sqm
 
 # Group by category and sum
-area_by_category = parks.groupby('tipologia')['st_area_shape'].sum().reset_index()
+area_by_category = green_zones.groupby('tipologia')['st_area_shape'].sum().reset_index()
 
 # Convert total area to ha
 area_by_category['area_ha'] = area_by_category['st_area_shape'] / 10000
@@ -36,52 +35,47 @@ area_by_category['area_ha'] = area_by_category['st_area_shape'] / 10000
 # 2 decimals
 area_by_category['area_ha'] = area_by_category['area_ha'].apply(lambda x: f'{x:,.2f} ha')
 
-'''print("\n")
+print("\n")
 print('Area by category') 
 display(area_by_category[['tipologia', 'area_ha']])
-print("\n")'''
+print("\n")
 
 # Calculate total green coverage in sq.km
-total_green_area_sqm = parks['st_area_shape'].sum()
+total_green_area_sqm = green_zones['st_area_shape'].sum()
 total_green_area_sqkm = total_green_area_sqm/ 1_000_000
-'''print(f'Total Green Coverage: {total_green_area_sqkm:,.2f} sqkm')
-print("\n")'''
+print(f'Total Green Coverage: {total_green_area_sqkm:,.2f} sqkm')
+print("\n")
 
 # Calculate Municipal area in sq.km
-mun_area_sqm = census['st_shape_area'].sum()
+mun_area_sqm = census_tracts['st_shape_area'].sum()
 mun_area_sqkm = mun_area_sqm/1_000_000
-'''print(f'Total Municipal Area: {mun_area_sqkm:,.2f} sqkm')
-print("\n")'''
+print(f'Total Municipal Area: {mun_area_sqkm:,.2f} sqkm')
+print("\n")
 
 # Calculate % of the green cover in the city
 green_cover_pct = (total_green_area_sqkm/mun_area_sqkm)*100
-'''print(f'Percentage of green cover in the city: {green_cover_pct:,.2f} %')'''
+print(f'Percentage of green cover in the city: {green_cover_pct:,.2f} %')
 
-# Spatial join btw parks and census
-parks_with_census = gpd.sjoin(parks, census, how="left", predicate="intersects")
+# Spatial join btw green_zones and census
+green_zones_with_census = gpd.sjoin(green_zones, census_tracts, how="left", predicate="intersects")
 
-# Verify parks per section
-parks_per_section = parks_with_census.groupby('coddistsecc').size()
+# Verify green_zones per section
+green_zones_per_section = green_zones_with_census.groupby('coddistsecc').size()
 
-# Aggregate the green area per zone. Group by the 'zona' column from parks and sum the green area
-green_area_per_zone = parks_with_census.groupby('zona')['st_area_shape'].sum().reset_index()
+# Aggregate the green area per zone. Group by the 'zona' column from green_zones and sum the green area
+green_area_per_zone = green_zones_with_census.groupby('zona')['st_area_shape'].sum().reset_index()
 green_area_per_zone['green_area_ha'] = green_area_per_zone['st_area_shape'] / 10000
 green_area_per_zone['green_area_ha'] = green_area_per_zone['green_area_ha'].apply(lambda x: f'{x:,.2f} ha')
 
 # Aggregate population per zone
-population_per_zone = parks_with_census.groupby('zona')['population'].sum().reset_index()
+population_per_zone = green_zones_with_census.groupby('zona')['population'].sum().reset_index()
 
 data_by_zone = pd.merge(green_area_per_zone, population_per_zone, on='zona')
 
 data_by_zone['sqm_per_person'] = data_by_zone['st_area_shape']/data_by_zone['population']
 
-'''print("\n")
-print("Green Cover sqm per person:")
-print(data_by_zone[['zona','green_area_ha', 'sqm_per_person']])
-print("\n")'''
-
 # Plot Coverage by Zone
-'''plt.figure(figsize=(10,6))
+plt.figure(figsize=(10,6))
 bars = plt.bar(data_by_zone['zona'], data_by_zone['sqm_per_person'], color='skyblue')
 
 plt.axhline(y=50, color='green', linestyle='--', label='ideal 50 sqm by World Health Organisation')
@@ -107,14 +101,14 @@ plt.xticks(rotation=90)
 plt.legend()
 
 plt.tight_layout()
-plt.show()'''
+plt.show()
 
 # Aggregate the green zones per District
-green_area_per_district = parks_with_census.groupby('dm_right')['st_area_shape'].sum().reset_index()
+green_area_per_district = green_zones_with_census.groupby('dm_right')['st_area_shape'].sum().reset_index()
 green_area_per_district['green_area_ha'] = green_area_per_district['st_area_shape'] / 10000
 green_area_per_district['green_area_ha'] = green_area_per_district['green_area_ha'].apply(lambda x: f'{x:,.2f} ha')
 
-population_per_district = parks_with_census.groupby('dm_right')['population'].sum().reset_index()
+population_per_district = green_zones_with_census.groupby('dm_right')['population'].sum().reset_index()
 
 data_by_district = pd.merge(green_area_per_district, population_per_district, on='dm_right')
 data_by_district['sqm_per_person'] = data_by_district['st_area_shape']/data_by_district['population']
@@ -122,7 +116,7 @@ data_by_district['sqm_per_person'] = data_by_district['st_area_shape']/data_by_d
 data_by_district = data_by_district.rename(columns = {'dm_right' : 'dm'})
 
 # Barplot Green covergae by District
-'''plt.figure(figsize=(10,6))
+plt.figure(figsize=(10,6))
 bars = plt.bar(data_by_district['dm'], data_by_district['sqm_per_person'], color='skyblue')
 
 plt.axhline(y=50, color='green', linestyle='--', label='ideal 50 sqm by World Health Organisation')
@@ -140,10 +134,10 @@ plt.xticks(rotation=90)
 plt.legend()
 
 plt.tight_layout()
-plt.show()'''
+plt.show()
 
 # Plot Covergae by District on the Map 
-'''# Create GeoDataFrame
+# Create GeoDataFrame
 districts_coverage = pd.merge(data_by_district, districts[['dm', 'geometry']], on='dm', how='left')
 districts_coverage = gpd.GeoDataFrame(districts_coverage, geometry='geometry')
 districts_coverage.set_crs(epsg=4326, inplace=True)
@@ -158,4 +152,4 @@ ctx.add_basemap(ax, crs=districts_coverage.crs, source=ctx.providers.CartoDB.Pos
 plt.title("Green Coverage per person by District (sqm)", size = 25)
 
 plt.tight_layout()
-plt.show()'''
+plt.show()
